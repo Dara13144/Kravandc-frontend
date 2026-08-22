@@ -4,7 +4,7 @@ import { paymentAPI } from '../api/endpoints';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
 import { CreditCard, ExternalLink, X, CheckCircle2, Loader2, AlertCircle, Zap } from 'lucide-react';
-import { io } from 'socket.io-client';
+import { createSocket } from '../utils/socket';
 import { toast } from 'react-toastify';
 
 const KhqrCcPluginModal = ({ isOpen, onClose, checkoutData, orderId }) => {
@@ -90,7 +90,7 @@ const KhqrCcPluginModal = ({ isOpen, onClose, checkoutData, orderId }) => {
     // 3. Socket.io Listener
     let socket;
     if (user?.id) {
-      socket = io(window.location.origin, { transports: ['websocket', 'polling'] });
+      socket = createSocket();
       socket.emit('join_user_room', user.id);
       socket.on('payment_success', (data) => {
         if (data.transactionId === checkoutData.transactionId) {

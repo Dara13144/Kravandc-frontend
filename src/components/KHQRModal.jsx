@@ -4,7 +4,7 @@ import { paymentAPI } from '../api/endpoints';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
 import { QrCode, CheckCircle2, RefreshCw, X, Loader2, Zap } from 'lucide-react';
-import { io } from 'socket.io-client';
+import { createSocket } from '../utils/socket';
 import { toast } from 'react-toastify';
 
 const KHQRModal = ({ isOpen, onClose, qrData, orderId }) => {
@@ -78,7 +78,7 @@ const KHQRModal = ({ isOpen, onClose, qrData, orderId }) => {
     // Socket.io Listener
     let socket;
     if (user?.id) {
-      socket = io(window.location.origin, { transports: ['websocket', 'polling'] });
+      socket = createSocket();
       socket.emit('join_user_room', user.id);
       socket.on('payment_success', (data) => {
         if (data.transactionId === qrData.transactionId) {

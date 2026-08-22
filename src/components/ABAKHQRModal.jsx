@@ -4,7 +4,7 @@ import { paymentAPI } from '../api/endpoints';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
 import { X } from 'lucide-react';
-import { io } from 'socket.io-client';
+import { createSocket } from '../utils/socket';
 import { toast } from 'react-toastify';
 import BakongCard from './BakongCard';
 
@@ -81,7 +81,7 @@ const ABAKHQRModal = ({ isOpen, onClose, khqrData, orderId }) => {
     // 3. Socket.io Real-time Event Listener
     let socket;
     if (user?.id) {
-      socket = io(window.location.origin, { transports: ['websocket', 'polling'] });
+      socket = createSocket();
       socket.emit('join_user_room', user.id);
       socket.on('payment_success', (data) => {
         if (data.transactionId === khqrData.transactionId || data.transaction_id === khqrData.transactionId) {

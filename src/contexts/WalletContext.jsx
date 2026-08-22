@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { walletAPI } from '../api/endpoints';
 import { useAuth } from './AuthContext';
-import { io } from 'socket.io-client';
+import { createSocket } from '../utils/socket';
 import { toast } from 'react-toastify';
 
 const WalletContext = createContext();
@@ -42,9 +42,7 @@ export const WalletProvider = ({ children }) => {
   useEffect(() => {
     if (!user?.id) return;
 
-    const socket = io('/', {
-      transports: ['websocket', 'polling']
-    });
+    const socket = createSocket();
 
     socket.emit('join_user_room', user.id);
 

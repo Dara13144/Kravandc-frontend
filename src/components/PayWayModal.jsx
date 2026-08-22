@@ -4,7 +4,7 @@ import { CreditCard, ExternalLink, X, CheckCircle2, Loader2, Zap, ShieldCheck, A
 import { paymentAPI } from '../api/endpoints';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
-import { io } from 'socket.io-client';
+import { createSocket } from '../utils/socket';
 import { toast } from 'react-toastify';
 import AbaPaywayLogo from './AbaPaywayLogo';
 
@@ -68,7 +68,7 @@ const PayWayModal = ({ isOpen, onClose, paywayData, orderId }) => {
     // 3. Socket.io Real-Time Listener
     let socket;
     if (user?.id) {
-      socket = io(window.location.origin, { transports: ['websocket', 'polling'] });
+      socket = createSocket();
       socket.emit('join_user_room', user.id);
       socket.on('payment_success', (data) => {
         if (data.transactionId === paywayData.transactionId) {
