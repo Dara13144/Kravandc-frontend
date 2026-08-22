@@ -16,6 +16,9 @@ export const getSocketUrl = () => {
       return import.meta.env.VITE_API_URL.replace(/\/api(\/v1)?\/?$/, '');
     }
   }
+  if (import.meta.env.PROD) {
+    return 'https://kravandc-backend.onrender.com';
+  }
   return window.location.origin;
 };
 
