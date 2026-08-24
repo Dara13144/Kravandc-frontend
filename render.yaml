@@ -13,3 +13,7 @@ services:
         value: https://kravandc-backend.onrender.com/api/v1
       - key: VITE_SOCKET_URL
         value: https://kravandc-backend.onrender.com
+      - key: VITE_SUPABASE_URL
+        value: https://irdgcydgnsocsgybivvm.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: sb_publishable_LeDxSyVdk75T5ybYRxoK9Q_j_X8YJSQ
