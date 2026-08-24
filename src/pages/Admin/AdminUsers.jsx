@@ -317,7 +317,7 @@ const AdminUsers = () => {
       {loading ? (
         <div className="py-24 text-center space-y-4">
           <Loader2 className="w-10 h-10 text-purple-400 animate-spin mx-auto" />
-          <p className="text-xs text-gray-400 font-bold">Loading KV Digital Cinema Users & Wallets...</p>
+          <p className="text-xs text-gray-400 font-bold">Loading KravanDC.com Users & Wallets...</p>
         </div>
       ) : filteredUsers.length === 0 ? (
         <div className="py-20 text-center bg-theme-card rounded-3xl border border-gray-800 space-y-3">

@@ -60,15 +60,15 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-3 group">
             <img
               src="/logo.png"
-              alt="KV MOVIES DIGITAL CINEMA"
+              alt="KravanDC.com"
               className="h-11 w-auto rounded-xl object-contain shadow-gold-glow animate-float group-hover:scale-110 transition-all duration-300 border border-amber-500/40"
             />
             <div>
               <span className="text-xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-white to-cyan-400">
-                KV MOVIES
+                KRAVAN<span className="text-amber-400">DC</span>
               </span>
               <span className="block text-[9px] font-extrabold tracking-[0.2em] text-theme-gold uppercase -mt-1">
-                DIGITAL CINEMA
+                KravanDC.com
               </span>
             </div>
           </Link>

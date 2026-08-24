@@ -9,16 +9,16 @@ const About = () => {
         <div className="w-14 h-14 rounded-2xl bg-gold-gradient flex items-center justify-center mx-auto shadow-gold-glow">
           <Film className="w-8 h-8 text-black" />
         </div>
-        <h1 className="text-4xl font-black text-white">About KV Digital Cinema</h1>
+        <h1 className="text-4xl font-black text-white">About KravanDC.com</h1>
         <p className="text-sm text-theme-gold font-semibold">The Next-Generation Cambodian Digital Movie Streaming Platform</p>
       </div>
 
       <div className="p-8 bg-theme-card rounded-3xl border border-gray-800 space-y-6 leading-relaxed text-sm">
         <p>
-          KV Digital Cinema is a premier digital entertainment streaming service delivering thousands of blockbuster movies, TV shows, and exclusive cinema podcasts directly to desktop and mobile screens in crystal-clear 4K Ultra HD.
+          KravanDC.com is a premier digital entertainment streaming service delivering thousands of blockbuster movies, TV shows, and exclusive cinema podcasts directly to desktop and mobile screens in crystal-clear 4K Ultra HD.
         </p>
         <p>
-          Built with advanced Cambodian financial gateway integrations including <strong className="text-amber-400">Bakong KHQR</strong> and <strong className="text-blue-400">ABA PayWay</strong>, KV Digital Cinema empowers viewers to top up wallet balances instantly with zero transaction delay.
+          Built with advanced Cambodian financial gateway integrations including <strong className="text-amber-400">Bakong KHQR</strong> and <strong className="text-blue-400">ABA PayWay</strong>, KravanDC.com empowers viewers to top up wallet balances instantly with zero transaction delay.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">

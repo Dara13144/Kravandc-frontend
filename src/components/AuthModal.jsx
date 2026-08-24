@@ -57,12 +57,12 @@ const AuthModal = () => {
         <div className="text-center space-y-2">
           <img
             src="/logo.png"
-            alt="KV MOVIES DIGITAL CINEMA"
+            alt="KravanDC.com"
             className="w-14 h-14 rounded-2xl mx-auto shadow-gold-glow object-contain border border-amber-500/30"
           />
           <h3 className="text-2xl font-black text-white">
             {authModalMode === 'login' && 'Welcome Back'}
-            {authModalMode === 'register' && 'Join KV Digital Cinema'}
+            {authModalMode === 'register' && 'Join KravanDC.com'}
             {authModalMode === 'forgot' && 'Reset Password'}
           </h3>
           <p className="text-xs text-gray-400">

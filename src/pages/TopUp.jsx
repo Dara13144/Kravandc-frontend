@@ -69,7 +69,7 @@ const TopUp = () => {
       <div className="text-center space-y-2">
         <img
           src="/logo.png"
-          alt="KV MOVIES DIGITAL CINEMA"
+          alt="KravanDC.com"
           className="w-14 h-14 rounded-2xl mx-auto shadow-gold-glow object-contain border border-amber-500/30"
         />
         <h1 className="text-3xl font-black text-white">Top Up Wallet Balance</h1>

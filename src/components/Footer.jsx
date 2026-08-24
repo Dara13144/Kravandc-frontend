@@ -13,15 +13,15 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-3">
               <img
                 src="/logo.png"
-                alt="KV MOVIES DIGITAL CINEMA"
+                alt="KravanDC.com"
                 className="h-10 w-auto rounded-xl object-contain shadow-gold-glow border border-amber-500/30"
               />
               <div>
                 <span className="text-lg font-black text-white tracking-wider">
-                  KV MOVIES
+                  KRAVAN<span className="text-amber-400">DC</span>
                 </span>
                 <span className="block text-[9px] font-extrabold tracking-[0.18em] text-theme-gold uppercase -mt-1">
-                  DIGITAL CINEMA
+                  KravanDC.com
                 </span>
               </div>
             </Link>
@@ -72,7 +72,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800/80 mt-12 pt-8 text-center text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} KV Digital Cinema. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} KravanDC.com. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
-  const [announcement, setAnnouncement] = useState('Welcome to KV Digital Cinema 4K Streaming & KHQR Auto-Pay');
+  const [announcement, setAnnouncement] = useState('Welcome to KravanDC.com 4K Streaming & KHQR Auto-Pay');
 
   const fetchAdminStats = async () => {
     try {

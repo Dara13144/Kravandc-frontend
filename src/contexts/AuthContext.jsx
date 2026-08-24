@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       setUser(userData);
-      toast.success('Registration successful! Welcome to KV Digital Cinema.');
+      toast.success('Registration successful! Welcome to KravanDC.com.');
       setIsAuthModalOpen(false);
       return true;
     } catch (err) {
