@@ -12,6 +12,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
+import MobileBottomNav from './components/MobileBottomNav';
 
 import Home from './pages/Home';
 import Movies from './pages/Movies';
@@ -49,7 +50,7 @@ function App() {
             <WalletProvider>
               <CartProvider>
                 <div className="min-h-screen bg-theme-bg text-gray-100 flex flex-col justify-between selection:bg-theme-gold selection:text-black transition-colors duration-300">
-              <div>
+              <div className="pb-20 md:pb-0">
                 <Navbar />
                 <Routes>
                   <Route path="/" element={<Home />} />
@@ -88,6 +89,7 @@ function App() {
                 </Routes>
               </div>
               <Footer />
+              <MobileBottomNav />
               <AuthModal />
               <ToastContainer position="bottom-right" theme="dark" />
             </div>

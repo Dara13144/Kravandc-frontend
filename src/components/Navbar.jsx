@@ -48,7 +48,10 @@ const Navbar = () => {
     { name: t('navHome'), path: '/' },
     { name: t('navMovies'), path: '/movies' },
     { name: t('navPodcasts'), path: '/podcasts' },
-    { name: t('navOrders'), path: '/orders', protected: true }
+    { name: 'Store & Merch', path: '/products' },
+    { name: 'Wishlist', path: '/wishlist', protected: true },
+    { name: t('navOrders'), path: '/orders', protected: true },
+    { name: 'Top Up Wallet (KHQR)', path: '/topup', protected: true }
   ];
 
   return (
