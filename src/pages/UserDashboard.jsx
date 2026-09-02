@@ -180,7 +180,7 @@ const UserDashboard = () => {
             <p className="text-xs text-gray-400">{user?.email}</p>
             <p className="text-[11px] text-gray-400 flex items-center justify-center sm:justify-start gap-1">
               <Calendar className="w-3.5 h-3.5 text-theme-gold" />
-              Member of KV Cinema
+              Member of Kravan DC
             </p>
           </div>
         </div>

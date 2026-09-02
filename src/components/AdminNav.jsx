@@ -23,7 +23,7 @@ const AdminNav = ({ title, subtitle, actionButton }) => {
       activeBg: 'bg-amber-500 text-black shadow-gold-sm font-black'
     },
     {
-      name: 'Cinema Podcasts Hub',
+      name: 'Kravan DC Podcasts',
       path: '/admin/podcasts',
       icon: Radio,
       color: 'text-cyan-400',

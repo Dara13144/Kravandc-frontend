@@ -30,7 +30,7 @@ const Orders = () => {
 
   const handleOpenVideo = (item) => {
     const videoUrl = item.videoUrl || item.movie?.videoUrl || item.product?.videoUrl || sampleVideoUrl;
-    const title = item.title || item.movie?.title || item.product?.name || 'KV 4K Cinema Stream';
+    const title = item.title || item.movie?.title || item.product?.name || 'Kravan DC 4K Cinema Stream';
     const poster = item.poster || item.movie?.poster || item.product?.image || '/logo.png';
     const movieId = item.movieId || item.movie?.id;
 
@@ -230,7 +230,7 @@ const Orders = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-white">{activeVideoModal.title}</h3>
-                  <p className="text-[11px] text-gray-400">KV 4K Ultra HD Streaming Player</p>
+                  <p className="text-[11px] text-gray-400">Kravan DC 4K Ultra HD Streaming Player</p>
                 </div>
               </div>
               <button

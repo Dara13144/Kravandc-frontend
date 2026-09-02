@@ -157,7 +157,7 @@ const ABAKHQRModal = ({ isOpen, onClose, khqrData, orderId }) => {
           qrImage={khqrData.qrImage || khqrData.qrCode}
           amount={khqrData.amount}
           currency={khqrData.currency || 'USD'}
-          merchantName={khqrData.merchantName || 'KV Digital Cinema'}
+          merchantName={khqrData.merchantName || 'Kravan DC'}
           logoUrl="/logo.png"
           checkoutUrl={khqrData.checkout_url || khqrData.checkoutUrl}
           transactionId={khqrData.transactionId}

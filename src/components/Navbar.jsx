@@ -45,17 +45,13 @@ const Navbar = () => {
   const isSuperAdmin = user && ['ADMIN', 'SUPER_ADMIN'].includes(user?.role);
 
   const navLinks = [
-    { name: t('navHome'), path: '/' },
-    { name: t('navMovies'), path: '/movies' },
-    { name: t('navPodcasts'), path: '/podcasts' },
-    { name: 'Store & Merch', path: '/products' },
-    { name: 'Wishlist', path: '/wishlist', protected: true },
-    { name: t('navOrders'), path: '/orders', protected: true },
-    { name: 'Top Up Wallet (KHQR)', path: '/topup', protected: true }
+    { name: 'HOME', path: '/' },
+    { name: 'MOVIES', path: '/movies' },
+    { name: 'PODCASTS', path: '/podcasts' }
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-theme-nav/80 backdrop-blur-md border-b border-gray-800/80 transition-all duration-300">
+    <header className="sticky top-0 z-50 bg-[#0A0C10]/95 backdrop-blur-md border-b border-gray-800/80 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -63,21 +59,16 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-3 group">
             <img
               src="/logo.png"
-              alt="KravanDC.com"
-              className="h-11 w-auto rounded-xl object-contain shadow-gold-glow animate-float group-hover:scale-110 transition-all duration-300 border border-amber-500/40"
+              alt="Kravan DC"
+              className="h-11 w-auto object-contain animate-gold-logo group-hover:scale-110 transition-all duration-300"
             />
-            <div>
-              <span className="text-xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-white to-cyan-400">
-                KRAVAN<span className="text-amber-400">DC</span>
-              </span>
-              <span className="block text-[9px] font-extrabold tracking-[0.2em] text-theme-gold uppercase -mt-1">
-                KravanDC.com
-              </span>
-            </div>
+            <span className="text-2xl font-black tracking-wider text-white flex items-center gap-1">
+              <span className="text-amber-400">Kravan</span> DC
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-7">
             {navLinks.map((link) => {
               if (link.protected && !user) return null;
               const isActive = location.pathname === link.path;
@@ -85,10 +76,10 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`text-xs font-black tracking-widest uppercase transition-colors ${
                     isActive
-                      ? 'text-theme-gold bg-theme-slate/50 font-semibold'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800/40'
+                      ? 'text-amber-400 border-b-2 border-amber-400 pb-1 font-extrabold'
+                      : 'text-gray-300 hover:text-amber-300'
                   }`}
                 >
                   {link.name}
@@ -97,59 +88,8 @@ const Navbar = () => {
             })}
           </nav>
 
-          {/* Search & Controls */}
+          {/* Controls */}
           <div className="flex items-center gap-2.5">
-            
-            {/* Live Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="relative hidden md:block">
-              <input
-                type="text"
-                placeholder="Search movies..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-40 lg:w-56 bg-theme-card/90 border border-gray-700/60 rounded-full py-1.5 pl-8 pr-3 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-theme-gold focus:ring-1 focus:ring-theme-gold transition-all"
-              />
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
-            </form>
-
-            {/* Language Switcher Button (EN / KM) */}
-            <button
-              onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-gray-700/60 text-xs font-bold text-gray-200 flex items-center gap-1.5 transition-all shadow-sm"
-              title="Switch Language (English / ភាសាខ្មែរ)"
-            >
-              <Globe className="w-3.5 h-3.5 text-theme-gold" />
-              <span>{lang === 'en' ? '🇬🇧 EN' : '🇰🇭 ខ្មែរ'}</span>
-            </button>
-
-            {/* Night / Light Mode Switcher Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-gray-700/60 text-amber-400 transition-all shadow-sm"
-              title={theme === 'dark' ? t('modeLight') : t('modeNight')}
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-indigo-400" />
-              )}
-            </button>
-
-            {/* Wallet Balance Badge */}
-            {user ? (
-              <Link
-                to="/topup"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-theme-card border border-amber-500/30 hover:border-theme-gold transition-colors group shadow-gold-sm"
-              >
-                <div className="w-6 h-6 rounded-full bg-theme-gold/20 flex items-center justify-center">
-                  <Wallet className="w-3.5 h-3.5 text-theme-gold" />
-                </div>
-                <span className="text-xs font-bold text-theme-gold">
-                  ${balance.toFixed(2)}
-                </span>
-                <PlusCircle className="w-3.5 h-3.5 text-gray-400 group-hover:text-theme-gold transition-colors" />
-              </Link>
-            ) : null}
 
             {/* Auth / Profile Dropdown */}
             {user ? (
@@ -196,6 +136,14 @@ const Navbar = () => {
                       className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-gray-300 hover:bg-gray-800/60 hover:text-white"
                     >
                       <User className="w-4 h-4 text-theme-gold" /> User Dashboard
+                    </Link>
+
+                    <Link
+                      to="/orders"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-gray-300 hover:bg-gray-800/60 hover:text-white"
+                    >
+                      <Film className="w-4 h-4 text-cyan-400" /> {t('navOrders')}
                     </Link>
 
                     <Link
@@ -259,31 +207,110 @@ const Navbar = () => {
 
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-800 space-y-2">
-            <form onSubmit={handleSearchSubmit} className="relative mb-3">
+          <div className="lg:hidden py-4 border-t border-gray-800 space-y-4 animate-fade-in">
+            {/* Mobile User Profile Header */}
+            {user ? (
+              <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-amber-500/20 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full object-cover border border-theme-gold shadow-sm"
+                  />
+                  <div>
+                    <p className="text-xs font-bold text-white truncate max-w-[150px]">{user.name}</p>
+                    <span className="inline-block text-[9px] font-black uppercase text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
+                <Link
+                  to="/topup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-theme-gold text-xs font-black"
+                >
+                  <Wallet className="w-3.5 h-3.5" />
+                  <span>${balance.toFixed(2)}</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openAuthModal('login');
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-900 border border-gray-700 text-xs font-bold text-white text-center"
+                >
+                  {t('signIn')}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openAuthModal('register');
+                  }}
+                  className="flex-1 py-2.5 rounded-xl gold-glow-button text-black text-xs font-black text-center"
+                >
+                  {t('register')}
+                </button>
+              </div>
+            )}
+
+            {/* Mobile Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
-                placeholder="Search movies..."
+                placeholder="Search movies, podcasts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-theme-card border border-gray-700 rounded-lg py-2 pl-9 pr-4 text-xs text-white"
+                className="w-full bg-theme-card/90 border border-gray-700 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-amber-400"
               />
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
             </form>
-            {navLinks.map((link) => {
-              if (link.protected && !user) return null;
-              if (link.adminOnly && !['ADMIN', 'SUPER_ADMIN'].includes(user?.role)) return null;
-              return (
+
+            {/* Navigation Links */}
+            <div className="space-y-1">
+              {navLinks.map((link) => {
+                if (link.protected && !user) return null;
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`block px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                      isActive
+                        ? 'text-amber-400 bg-amber-500/10 font-bold border border-amber-500/20'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+
+              {isSuperAdmin && (
                 <Link
-                  key={link.name}
-                  to={link.path}
+                  to="/admin"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-300 hover:text-theme-gold hover:bg-gray-800/50 transition-all"
+                  className="block px-4 py-2.5 rounded-xl text-sm font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-all border border-amber-500/30"
                 >
-                  {link.name}
+                  🛡️ Admin Portal
                 </Link>
-              );
-            })}
+              )}
+
+              {user && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-rose-400 hover:bg-rose-500/10 transition-all flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> {t('navSignOut')}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>

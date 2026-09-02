@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Film, ShieldCheck, CreditCard, Sparkles } from 'lucide-react';
+import PaymentMethodBadges from './PaymentMethodBadges';
 
 const Footer = () => {
   return (
-    <footer className="bg-theme-bg border-t border-gray-800/80 pt-16 pb-12 mt-20 text-gray-400">
+    <footer className="bg-black border-t border-gray-900/90 pt-16 pb-12 mt-20 text-gray-400 shadow-2xl relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           
@@ -13,17 +14,12 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-3">
               <img
                 src="/logo.png"
-                alt="KravanDC.com"
-                className="h-10 w-auto rounded-xl object-contain shadow-gold-glow border border-amber-500/30"
+                alt="Kravan DC"
+                className="h-10 w-auto object-contain animate-gold-logo"
               />
-              <div>
-                <span className="text-lg font-black text-white tracking-wider">
-                  KRAVAN<span className="text-amber-400">DC</span>
-                </span>
-                <span className="block text-[9px] font-extrabold tracking-[0.18em] text-theme-gold uppercase -mt-1">
-                  KravanDC.com
-                </span>
-              </div>
+              <span className="text-xl font-black text-white tracking-wider">
+                <span className="text-amber-400">Kravan</span> DC
+              </span>
             </Link>
             <p className="text-xs leading-relaxed text-gray-400">
               The ultimate 4K movie streaming and podcast platform. Stream blockbuster movies, series, and exclusive content instantly with ABA PayWay and Bakong KHQR.
@@ -36,7 +32,7 @@ const Footer = () => {
             <ul className="space-y-2.5 text-xs">
               <li><Link to="/movies" className="hover:text-theme-gold transition-colors">All Movies</Link></li>
               <li><Link to="/movies?category=tv-shows" className="hover:text-theme-gold transition-colors">TV Shows</Link></li>
-              <li><Link to="/podcasts" className="hover:text-theme-gold transition-colors">Podcasts Hub</Link></li>
+              <li><Link to="/podcasts" className="hover:text-theme-gold transition-colors">Podcasts</Link></li>
               <li><Link to="/topup" className="hover:text-theme-gold transition-colors">Top Up Wallet</Link></li>
             </ul>
           </div>
@@ -56,17 +52,7 @@ const Footer = () => {
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-4">Payment Methods</h4>
             <p className="text-xs text-gray-400 mb-3">Instant auto-verifying balance top up via:</p>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1.5 rounded-lg bg-theme-card border border-gray-700/60 text-[11px] font-bold text-red-400">
-                ABA PAYWAY
-              </span>
-              <span className="px-3 py-1.5 rounded-lg bg-theme-card border border-gray-700/60 text-[11px] font-bold text-amber-400">
-                BAKONG KHQR
-              </span>
-              <span className="px-3 py-1.5 rounded-lg bg-theme-card border border-gray-700/60 text-[11px] font-bold text-blue-400">
-                VISA / MASTER
-              </span>
-            </div>
+            <PaymentMethodBadges />
           </div>
 
         </div>

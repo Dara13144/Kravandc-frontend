@@ -14,6 +14,25 @@
     background-color: #F8FAFC;
     color: #0F172A;
   }
+
+  /* Anti-Download & Anti-Rip Protective Rules */
+  video {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    pointer-events: auto;
+  }
+
+  video::-internal-media-controls-download-button,
+  video::-webkit-media-controls-download-button {
+    display: none !important;
+  }
+
+  video::-webkit-media-controls-enclosure {
+    overflow: hidden;
+  }
 }
 
 /* Light Theme Overrides */
@@ -64,6 +83,116 @@ html.light .border-gray-800 {
 }
 
 /* 🌟 Keyframe Animations & Micro-Interactions */
+@keyframes neonCyanPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.75)) drop-shadow(0 0 55px rgba(6, 182, 212, 0.35));
+    opacity: 0.96;
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 40px rgba(6, 182, 212, 1)) drop-shadow(0 0 85px rgba(6, 182, 212, 0.6));
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.neon-cyan-text {
+  animation: neonCyanPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes cinematicZoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-cinematic-zoom {
+  animation: cinematicZoom 16s ease-in-out infinite;
+}
+
+@keyframes beamSweep {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(25deg);
+  }
+}
+
+.animate-beam-sweep {
+  animation: beamSweep 7s ease-in-out infinite;
+}
+
+@keyframes goldLogoPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4)) drop-shadow(0 0 20px rgba(217, 119, 6, 0.2));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.9)) drop-shadow(0 0 40px rgba(251, 191, 36, 0.5));
+    transform: scale(1.05) translateY(-1px);
+  }
+}
+
+.animate-gold-logo {
+  animation: goldLogoPulse 3s ease-in-out infinite;
+}
+
+@keyframes neonPulseAnim {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.6)) drop-shadow(0 0 25px rgba(59, 130, 246, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(6, 182, 212, 1)) drop-shadow(0 0 45px rgba(59, 130, 246, 0.8));
+    transform: scale(1.06) rotate(1deg);
+  }
+}
+
+.animate-neon-pulse {
+  animation: neonPulseAnim 2.5s ease-in-out infinite;
+}
+
+@keyframes floatHologramAnim {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.5));
+  }
+  50% {
+    transform: translateY(-8px) rotate(-2deg);
+    filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.9)) drop-shadow(0 0 50px rgba(251, 191, 36, 0.6));
+  }
+}
+
+.animate-float-hologram {
+  animation: floatHologramAnim 4s ease-in-out infinite;
+}
+
+@keyframes shimmerSweepAnim {
+  0% {
+    filter: brightness(1) drop-shadow(0 0 6px rgba(245, 158, 11, 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.35) drop-shadow(0 0 24px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 45px rgba(245, 158, 11, 0.6));
+    transform: scale(1.08);
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 6px rgba(245, 158, 11, 0.3));
+    transform: scale(1);
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: shimmerSweepAnim 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.3), 0 0 30px rgba(245, 158, 11, 0.1);
@@ -111,6 +240,71 @@ html.light .border-gray-800 {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+@keyframes goldWallpaperPan {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 0.20;
+  }
+  50% {
+    transform: scale(1.05) translateY(-10px);
+    opacity: 0.30;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.20;
+  }
+}
+
+.animate-gold-wallpaper {
+  animation: goldWallpaperPan 20s ease-in-out infinite;
+}
+
+@keyframes kbachRotateSlow {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.animate-kbach-spin {
+  animation: kbachRotateSlow 120s linear infinite;
+}
+
+@keyframes kbachFloatAnim {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translateY(-20px) rotate(6deg) scale(1.05);
+    opacity: 0.22;
+  }
+}
+
+.animate-kbach-float {
+  animation: kbachFloatAnim 12s ease-in-out infinite;
+}
+
+@keyframes kbachGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.15)) drop-shadow(0 0 80px rgba(245, 158, 11, 0.05));
+    opacity: 0.10;
+  }
+  50% {
+    filter: drop-shadow(0 0 60px rgba(245, 158, 11, 0.40)) drop-shadow(0 0 120px rgba(251, 191, 36, 0.20));
+    opacity: 0.20;
+  }
+}
+
+.animate-kbach-pulse {
+  animation: kbachGlowPulse 8s ease-in-out infinite;
 }
 
 /* Custom Animation Utility Classes */
@@ -163,6 +357,31 @@ html.light .border-gray-800 {
   transform: translateY(-4px);
   border-color: rgba(245, 158, 11, 0.45) !important;
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+/* Card Shimmer & Ambient Lighting Sweep */
+.card-ambient-hover {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-ambient-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: skewX(-25deg);
+  transition: 0.75s ease-in-out;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.card-ambient-hover:hover::before {
+  left: 150%;
 }
 
 /* Custom Scrollbar */

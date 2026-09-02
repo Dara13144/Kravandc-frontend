@@ -6,6 +6,7 @@ import ABAKHQRModal from '../components/ABAKHQRModal';
 import { Wallet, QrCode, Loader2, CheckCircle2, Zap, ShieldCheck, ArrowRight } from 'lucide-react';
 import { toast } from 'react-toastify';
 import AbaKhqrLogo from '../components/AbaKhqrLogo';
+import PaymentMethodBadges from '../components/PaymentMethodBadges';
 
 const TopUp = () => {
   const { balance, fetchWallet } = useWallet();
@@ -17,7 +18,7 @@ const TopUp = () => {
 
   const [abaKhqrData, setAbaKhqrData] = useState(null);
 
-  const presets = ['0.01', '1.00', '5.00', '10.00', '25.00', '50.00'];
+  const presets = ['1.00', '5.00', '10.00', '25.00', '50.00', '100.00'];
 
   // Cooldown countdown timer for 429 rate limit
   useEffect(() => {
@@ -45,7 +46,7 @@ const TopUp = () => {
     try {
       const res = await paymentAPI.createCutLuyPayment(parseFloat(amount));
       setAbaKhqrData(res.data.data);
-      toast.success('Bakong KHQR generated successfully!');
+      toast.success('ABA KHQR generated successfully!');
     } catch (err) {
       if (err.response?.status === 429) {
         toast.warn('Too many payment requests. Please wait 10 seconds.');
@@ -69,11 +70,11 @@ const TopUp = () => {
       <div className="text-center space-y-2">
         <img
           src="/logo.png"
-          alt="KravanDC.com"
-          className="w-14 h-14 rounded-2xl mx-auto shadow-gold-glow object-contain border border-amber-500/30"
+          alt="Kravan DC"
+          className="w-16 h-16 mx-auto object-contain animate-gold-logo"
         />
         <h1 className="text-3xl font-black text-white">Top Up Wallet Balance</h1>
-        <p className="text-xs text-gray-400">Instant auto-verifying deposit via NBC Bakong KHQR Gateway.</p>
+        <p className="text-xs text-gray-400">Instant auto-verifying deposit via ABA KHQR Gateway.</p>
       </div>
 
       {/* Current Balance Card */}
@@ -136,7 +137,7 @@ const TopUp = () => {
           <label className="text-xs font-bold text-gray-300">Payment Gateway</label>
           <div className="space-y-3">
             
-            {/* Option: Bakong KHQR */}
+            {/* Option: ABA KHQR */}
             <div
               onClick={() => setPaymentMethod('ABA_KHQR')}
               className="p-4 rounded-2xl border cursor-pointer flex items-center justify-between transition-all select-none border-red-500 bg-red-600/10 text-white shadow-lg ring-1 ring-red-500/40"
@@ -145,12 +146,12 @@ const TopUp = () => {
                 <AbaKhqrLogo className="w-11 h-11" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-black text-white">Bakong KHQR</p>
+                    <p className="text-sm font-black text-white">ABA KHQR</p>
                     <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30">
                       SCAN & PAY
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-0.5">Instant KHQR Scan & Pay via ABA Mobile & Bakong banking apps</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Instant KHQR Scan & Pay via ABA Mobile app</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-600/20 text-red-400 border border-red-500/30">
@@ -180,6 +181,12 @@ const TopUp = () => {
             </>
           )}
         </button>
+
+        {/* Accepted Payment Gateway Badges */}
+        <div className="pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-xs font-bold text-gray-400">Accepted Payment Methods:</span>
+          <PaymentMethodBadges />
+        </div>
       </form>
 
       {/* Modals */}

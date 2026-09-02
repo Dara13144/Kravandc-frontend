@@ -3,9 +3,10 @@ import { adminAPI } from '../../api/endpoints';
 import { 
   Users, Film, ShoppingBag, DollarSign, TrendingUp, ShieldAlert, Loader2, 
   Radio, CreditCard, Activity, CheckCircle2, AlertTriangle, Sparkles, RefreshCw, 
-  Server, Zap, Settings, ArrowRight, Play, Database
+  Server, Zap, Settings, ArrowRight, Play, Database, Upload, Image as ImageIcon
 } from 'lucide-react';
 import AdminNav from '../../components/AdminNav';
+import UploadVideoLogoModal from '../../components/UploadVideoLogoModal';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,12 +17,27 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [announcement, setAnnouncement] = useState('Welcome to KravanDC.com 4K Streaming & KHQR Auto-Pay');
+  
+  // Video Logo Watermark Modal State
+  const [showLogoModal, setShowLogoModal] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [movieList, setMovieList] = useState([]);
 
   const fetchAdminStats = async () => {
     try {
       setLoading(true);
       const res = await adminAPI.getStats();
       setData(res.data.data);
+      
+      // Also fetch movies list for quick watermark targeting
+      const { movieAPI } = await import('../../api/endpoints');
+      const movieRes = await movieAPI.getMovies({ limit: 50 });
+      if (movieRes.data.data?.movies) {
+        setMovieList(movieRes.data.data.movies);
+        if (movieRes.data.data.movies.length > 0) {
+          setSelectedMovieId(movieRes.data.data.movies[0].id);
+        }
+      }
     } catch (err) {
       console.error('Failed to load admin stats', err);
     } finally {
@@ -85,14 +101,76 @@ const AdminDashboard = () => {
         }
         subtitle="Complete centralized administration over Movies, Podcasts, Gateways, Wallets, Users, and Streaming."
         actionButton={
-          <button
-            onClick={fetchAdminStats}
-            className="p-2.5 rounded-xl bg-slate-900 border border-gray-800 hover:border-amber-500/40 text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 transition-all"
-          >
-            <RefreshCw className="w-4 h-4 text-theme-gold" /> Refresh Stats
-          </button>
+          <div className="flex items-center gap-2">
+            {/* 🌟 Dedicated Upload Logo on Video Button Matching User Screenshot */}
+            <button
+              onClick={() => setShowLogoModal(true)}
+              className="px-4 py-2 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center gap-2 shadow-gold-sm hover:scale-105 transition-all cursor-pointer"
+            >
+              <Upload className="w-4 h-4 text-amber-400" />
+              <span>Upload Logo on Video</span>
+            </button>
+
+            <button
+              onClick={fetchAdminStats}
+              className="p-2.5 rounded-xl bg-slate-900 border border-gray-800 hover:border-amber-500/40 text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 transition-all"
+            >
+              <RefreshCw className="w-4 h-4 text-theme-gold" /> Refresh Stats
+            </button>
+          </div>
         }
       />
+
+      {/* 🌟 Master Video Logo & Channel Watermark Studio Banner */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/40 via-slate-900/90 to-yellow-950/40 border border-amber-500/40 shadow-gold-glow flex flex-wrap items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-black/60 border border-amber-500/40 flex items-center justify-center p-2 shadow-gold-sm">
+            <img
+              src="/logo.png"
+              alt="Channel Logo"
+              className="h-full w-auto object-contain animate-gold-logo"
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-theme-gold border border-amber-500/30">
+                ACTIVE 4K VIDEO WATERMARK
+              </span>
+              <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> Live on Streams
+              </span>
+            </div>
+            <h3 className="text-xl font-black text-white mt-1">Video Stream Logo & Branding Studio</h3>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Control the glowing watermark overlay appearing on all video players and theater modes.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {movieList.length > 0 && (
+            <select
+              value={selectedMovieId || ''}
+              onChange={(e) => setSelectedMovieId(e.target.value)}
+              className="bg-slate-950 border border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-200 focus:border-amber-400 focus:outline-none"
+            >
+              {movieList.map((m) => (
+                <option key={m.id} value={m.id}>
+                  Target: {m.title}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <button
+            onClick={() => setShowLogoModal(true)}
+            className="px-5 py-2.5 rounded-full gold-glow-button text-black font-black text-xs flex items-center gap-2 shadow-gold-sm hover:scale-105 transition-all cursor-pointer"
+          >
+            <Upload className="w-4 h-4 text-black fill-black" />
+            <span>Upload Logo on Video</span>
+          </button>
+        </div>
+      </div>
 
       {/* Live System Engine Status Banner */}
       <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900/80 to-cyan-950/40 border border-emerald-500/30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 shadow-xl">
@@ -159,7 +237,7 @@ const AdminDashboard = () => {
             <Radio className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white group-hover:text-cyan-400 transition-colors">Cinema Podcasts Hub</h3>
+            <h3 className="text-lg font-black text-white group-hover:text-cyan-400 transition-colors">Kravan DC Podcasts</h3>
             <p className="text-xs text-gray-400 mt-1">Upload 4K video podcasts, audio commentaries, set sell pricing ($), and manage categories.</p>
           </div>
           <div className="pt-2 flex items-center text-xs font-extrabold text-cyan-400 gap-1">
@@ -297,6 +375,17 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* 🎬 Dedicated Video Logo Watermark Upload Modal */}
+      <UploadVideoLogoModal
+        isOpen={showLogoModal}
+        onClose={() => setShowLogoModal(false)}
+        movieId={selectedMovieId || (movieList.length > 0 ? movieList[0].id : null)}
+        currentLogo={movieList.find((m) => m.id === selectedMovieId)?.videoLogo || '/logo.png'}
+        onLogoUpdated={() => {
+          fetchAdminStats();
+          toast.success('🎬 Video logo updated across cinema platform!');
+        }}
+      />
     </div>
   );
 };

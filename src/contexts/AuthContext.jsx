@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../api/endpoints';
 import { toast } from 'react-toastify';
+import supabase from '../api/supabase';
 
 const AuthContext = createContext();
 
@@ -9,6 +10,47 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot'
+
+  const loginWithGoogle = useCallback(async (googleData) => {
+    try {
+      const res = await authAPI.googleLogin(googleData);
+      const { user: userData, accessToken, refreshToken } = res.data.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      setUser(userData);
+      toast.success(`Google authentication successful! Welcome ${userData.name}.`);
+      setIsAuthModalOpen(false);
+      return true;
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Google Login failed');
+      return false;
+    }
+  }, []);
+
+  const signInWithGoogleOAuth = useCallback(async () => {
+    try {
+      if (supabase) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'select_account'
+            }
+          }
+        });
+        if (error) {
+          console.warn('Supabase OAuth Error:', error.message);
+          return false;
+        }
+        return true;
+      }
+    } catch (err) {
+      console.warn('Supabase OAuth exception:', err.message);
+    }
+    return false;
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,7 +71,25 @@ export const AuthProvider = ({ children }) => {
       }
     };
     fetchUser();
-  }, []);
+
+    // Supabase OAuth State Change Listener (e.g. Google Sign-In redirect / popup)
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user && !localStorage.getItem('accessToken')) {
+          const googleUser = {
+            googleId: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0],
+            avatar: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture
+          };
+          await loginWithGoogle(googleUser);
+        }
+      });
+      return () => {
+        subscription?.unsubscribe();
+      };
+    }
+  }, [loginWithGoogle]);
 
   const login = async (email, password) => {
     try {
@@ -63,25 +123,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const loginWithGoogle = async (googleData) => {
-    try {
-      const res = await authAPI.googleLogin(googleData);
-      const { user: userData, accessToken, refreshToken } = res.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      setUser(userData);
-      toast.success(`Google authentication successful! Welcome ${userData.name}.`);
-      setIsAuthModalOpen(false);
-      return true;
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Google Login failed');
-      return false;
-    }
-  };
-
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        // ignore
+      }
+    }
     setUser(null);
     toast.info('Logged out');
   };
@@ -100,6 +151,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         loginWithGoogle,
+        signInWithGoogleOAuth,
         logout,
         isAuthModalOpen,
         setIsAuthModalOpen,

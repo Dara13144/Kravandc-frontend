@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Star, Heart, Tag } from 'lucide-react';
+import { Play, Star, Heart, Tag, Eye } from 'lucide-react';
 import { movieAPI } from '../api/endpoints';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
@@ -28,13 +28,17 @@ const MovieCard = ({ movie, isFavorite = false, onToggleFav }) => {
   return (
     <div
       onClick={() => navigate(`/movie/${movie.slug || movie.id}`)}
-      className="group relative rounded-2xl bg-theme-card border border-gray-800/80 overflow-hidden cursor-pointer shadow-lg hover:border-theme-gold/80 transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-gold-glow flex flex-col h-full"
+      className="group relative rounded-2xl bg-theme-card border border-gray-800/80 overflow-hidden cursor-pointer shadow-lg hover:border-theme-gold/80 transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-gold-glow flex flex-col h-full card-ambient-hover"
     >
       {/* Poster Container */}
       <div className="relative aspect-[2/3] w-full overflow-hidden bg-gray-950">
         <img
-          src={movie.poster}
+          src={movie.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600'}
           alt={movie.title}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600';
+          }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
@@ -77,37 +81,28 @@ const MovieCard = ({ movie, isFavorite = false, onToggleFav }) => {
         </div>
       </div>
 
-      {/* Card Information */}
-      <div className="p-3.5 flex flex-col flex-grow justify-between space-y-2">
-        <div>
-          <div className="flex items-center justify-between text-[11px] text-gray-400 mb-1">
-            <span className="font-semibold text-gray-300">{movie.releaseYear}</span>
-            <div className="flex items-center gap-1 text-amber-400 font-bold">
-              <Star className="w-3 h-3 fill-amber-400" />
-              <span>{movie.rating}</span>
-            </div>
-          </div>
-
-          <h3 className="text-sm font-bold text-white group-hover:text-theme-gold transition-colors line-clamp-1">
+      {/* Card Information (Angkor DC Style) */}
+      <div className="p-3 text-center flex flex-col justify-between space-y-1">
+        <h3 className="text-xs sm:text-sm font-bold text-gray-100 group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
+          {movie.titleKh ? `${movie.titleKh} | ${movie.title}` : movie.title}
+        </h3>
+        {movie.titleKh && (
+          <p className="text-[10px] text-amber-400/90 font-bold uppercase tracking-wider line-clamp-1">
             {movie.title}
-          </h3>
-        </div>
-
-        {/* Price & Duration Bar */}
-        <div className="flex items-center justify-between text-[11px] pt-2 border-t border-gray-800/80">
-          <div>
-            {isPremium ? (
-              <span className="text-xs font-black text-theme-gold flex items-center gap-1">
-                ${displayPrice} <span className="text-[9px] font-normal text-gray-400">USD</span>
-              </span>
-            ) : (
-              <span className="text-xs font-black text-emerald-400">
-                100% Free
-              </span>
-            )}
+          </p>
+        )}
+        <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 pt-1">
+          <span>{movie.releaseYear || '2026'}</span>
+          <span>•</span>
+          <div className="flex items-center gap-0.5 text-amber-400 font-bold">
+            <Star className="w-2.5 h-2.5 fill-amber-400" />
+            <span>{movie.rating || '9.0'}</span>
           </div>
-          
-          <span className="text-gray-400 font-semibold text-[10px]">{movie.duration}m</span>
+          <span>•</span>
+          <div className="flex items-center gap-0.5 text-cyan-300 font-semibold" title="Total Views">
+            <Eye className="w-2.5 h-2.5 text-cyan-400" />
+            <span>{movie.viewCount ? Number(movie.viewCount).toLocaleString() : '1,420'}</span>
+          </div>
         </div>
       </div>
     </div>

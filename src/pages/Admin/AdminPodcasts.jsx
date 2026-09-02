@@ -244,7 +244,7 @@ const AdminPodcasts = () => {
       <AdminNav
         title={
           <span className="flex items-center gap-3">
-            <Radio className="w-8 h-8 text-cyan-400 animate-pulse-glow" /> Cinema Podcasts Hub & Video Stream Control
+            <Radio className="w-8 h-8 text-cyan-400 animate-pulse-glow" /> Kravan DC Podcasts & Video Stream Control
           </span>
         }
         subtitle="Add audio & video podcast streams, set sell prices ($), and manage episode catalog."

@@ -28,7 +28,7 @@ export function BakongCard({
   qrImage,
   amount,
   currency = 'USD',
-  merchantName = 'KV Digital Cinema',
+  merchantName = 'Kravan DC',
   logoUrl = '/logo.png',
   checkoutUrl = null,
   transactionId = null,

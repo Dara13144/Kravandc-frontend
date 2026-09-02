@@ -6,6 +6,9 @@ import { useWallet } from '../contexts/WalletContext';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
 import MovieCard from '../components/MovieCard';
 import ABAKHQRModal from '../components/ABAKHQRModal';
+import LiveViewersCounter from '../components/LiveViewersCounter';
+import MovieComments from '../components/MovieComments';
+import UploadVideoLogoModal from '../components/UploadVideoLogoModal';
 import {
   Loader2,
   Lock,
@@ -19,7 +22,9 @@ import {
   AlertCircle,
   PlusCircle,
   QrCode,
-  X
+  X,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAntiScreenRecord } from '../hooks/useAntiScreenRecord';
@@ -47,6 +52,9 @@ const WatchMovie = () => {
   // KHQR Direct Modal
   const [showKhqrModal, setShowKhqrModal] = useState(false);
   const [khqrData, setKhqrData] = useState(null);
+
+  // Video Logo Upload Modal
+  const [showLogoModal, setShowLogoModal] = useState(false);
 
   const fetchMovie = async () => {
     setLoading(true);
@@ -204,17 +212,41 @@ const WatchMovie = () => {
       )}
 
       {/* Movie Details Under Player */}
-      <div className="bg-theme-card p-6 rounded-3xl border border-gray-800 space-y-3 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="text-2xl font-black text-white">{movie.title}</h1>
-          <span className="text-xs text-theme-gold font-bold bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">
+      <div className="bg-theme-card p-6 rounded-3xl border border-gray-800 space-y-4 shadow-lg">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-black text-white">{movie.title}</h1>
+            <LiveViewersCounter movieId={movie.id} totalViews={movie.viewCount} />
+          </div>
+
+          <span className="text-xs text-theme-gold font-bold bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/30 shadow-sm">
             {movie.releaseYear} • {movie.duration} min • {movie.language || 'English'}
           </span>
         </div>
-        <p className="text-xs text-gray-400 leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
           {movie.description}
         </p>
       </div>
+
+      {/* 🎬 Dedicated Video Logo Watermark Upload Modal */}
+      <UploadVideoLogoModal
+        isOpen={showLogoModal}
+        onClose={() => setShowLogoModal(false)}
+        movieId={movie.id}
+        currentLogo={movie.videoLogo}
+        onLogoUpdated={(newLogo) => {
+          setMovieData((prev) => ({
+            ...prev,
+            movie: {
+              ...prev.movie,
+              videoLogo: newLogo
+            }
+          }));
+        }}
+      />
+
+      {/* 💬 Real-Time Comments & Live Discussion */}
+      <MovieComments movieId={movie.id} initialReviews={movie.reviews} />
 
       {/* 🎬 Buy More Videos / Recommended Section */}
       {related && related.length > 0 && (
@@ -275,16 +307,6 @@ const WatchMovie = () => {
                 <span className="font-black text-theme-gold text-sm">${balance.toFixed(2)} USD</span>
               </div>
 
-              {balance < Number(currentPrice) && (
-                <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-left space-y-1">
-                  <div className="flex items-center gap-1.5 text-amber-400 font-bold text-xs">
-                    <AlertCircle className="w-4 h-4" /> Need to Add Balance to Buy Video
-                  </div>
-                  <p className="text-gray-300 text-[11px] leading-relaxed">
-                    You have <strong className="text-white">${balance.toFixed(2)}</strong>. You need <strong className="text-theme-gold">${(Number(currentPrice) - balance).toFixed(2)} USD</strong> more to buy this video.
-                  </p>
-                </div>
-              )}
             </div>
 
             {/* Action Buttons */}
@@ -303,19 +325,19 @@ const WatchMovie = () => {
                 <>
                   <button
                     onClick={() => navigate(`/topup?amount=${Math.ceil(Number(currentPrice) - balance)}`)}
-                    className="w-full py-4 rounded-full gold-glow-button text-black font-black text-xs flex items-center justify-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer"
+                    className="w-full py-4 rounded-full gold-glow-button text-black font-black text-xs flex items-center justify-center gap-2.5 shadow-xl hover:scale-105 transition-all cursor-pointer"
                   >
-                    <PlusCircle className="w-4 h-4 fill-black text-black" />
-                    <span>Add Balance to Wallet (Bakong KHQR)</span>
+                    <img src="/wallet-icon.png" alt="Wallet" className="w-5 h-5 object-contain" />
+                    <span>Add Balance to Wallet (ABA KHQR)</span>
                   </button>
 
                   <button
                     onClick={handleKhqrDirectPay}
                     disabled={isPurchasing}
-                    className="w-full py-3.5 rounded-full bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
+                    className="w-full py-3.5 rounded-full bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-bold text-xs flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
                   >
-                    <QrCode className="w-4 h-4 text-cyan-400" />
-                    <span>Or Scan ABA KHQR Directly ($${Number(currentPrice).toFixed(2)})</span>
+                    <img src="/aba-khqr-icon.png" alt="ABA KHQR" className="h-5 w-auto object-contain rounded-sm" />
+                    <span>ABA KHQR (${Number(currentPrice).toFixed(2)})</span>
                   </button>
                 </>
               )}

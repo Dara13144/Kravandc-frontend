@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import MobileBottomNav from './components/MobileBottomNav';
+import AnimatedKhmerBackground from './components/AnimatedKhmerBackground';
 
 import Home from './pages/Home';
 import Movies from './pages/Movies';
@@ -40,8 +41,12 @@ import AdminPodcasts from './pages/Admin/AdminPodcasts';
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminPayments from './pages/Admin/AdminPayments';
 import AdminPayWay from './pages/Admin/AdminPayWay';
+import { useDevToolsProtection } from './hooks/useDevToolsProtection';
 
 function App() {
+  // Global F12 & Anti-Inspect Protection
+  useDevToolsProtection(true);
+
   return (
     <Router>
       <ThemeProvider>
@@ -49,15 +54,17 @@ function App() {
           <AuthProvider>
             <WalletProvider>
               <CartProvider>
-                <div className="min-h-screen bg-theme-bg text-gray-100 flex flex-col justify-between selection:bg-theme-gold selection:text-black transition-colors duration-300">
-              <div className="pb-20 md:pb-0">
-                <Navbar />
+                <div className="relative min-h-screen bg-theme-bg text-gray-100 flex flex-col justify-between selection:bg-theme-gold selection:text-black transition-colors duration-300">
+                  <AnimatedKhmerBackground />
+                  <div className="relative z-10 pb-20 md:pb-0">
+                    <Navbar />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/movies" element={<Movies />} />
                   <Route path="/movie/:slug" element={<MovieDetails />} />
                   <Route path="/watch/:slug" element={<WatchMovie />} />
                   <Route path="/podcasts" element={<Podcasts />} />
+                  <Route path="/news" element={<Podcasts />} />
                   <Route path="/wishlist" element={<Wishlist />} />
 
                   {/* E-Commerce & ABA PayWay KHQR Routes */}

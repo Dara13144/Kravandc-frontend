@@ -34,6 +34,8 @@ const AdminMovies = () => {
   const [releaseYear, setReleaseYear] = useState('2026');
   const [uploadingPoster, setUploadingPoster] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [videoLogo, setVideoLogo] = useState('/logo.png');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
   const [uploadingTrailer, setUploadingTrailer] = useState(false);
@@ -47,22 +49,27 @@ const AdminMovies = () => {
     try {
       if (type === 'poster') setUploadingPoster(true);
       if (type === 'banner') setUploadingBanner(true);
+      if (type === 'videoLogo') setUploadingLogo(true);
 
-      const res = await uploadAPI.uploadFile(formData);
-      const uploadedUrl = res.data.data.url;
+      const res = await uploadAPI.uploadMedia(formData);
+      const url = res.data.data.url;
 
       if (type === 'poster') {
-        setPoster(uploadedUrl);
-        toast.success('Poster image uploaded successfully!');
-      } else {
-        setBanner(uploadedUrl);
-        toast.success('Banner backdrop uploaded successfully!');
+        setPoster(url);
+        toast.success('Poster uploaded successfully!');
+      } else if (type === 'banner') {
+        setBanner(url);
+        toast.success('Banner uploaded successfully!');
+      } else if (type === 'videoLogo') {
+        setVideoLogo(url);
+        toast.success('Video Logo uploaded successfully! Live on video overlay.');
       }
     } catch (err) {
       toast.error('Failed to upload image: ' + (err.response?.data?.message || err.message));
     } finally {
       if (type === 'poster') setUploadingPoster(false);
       if (type === 'banner') setUploadingBanner(false);
+      if (type === 'videoLogo') setUploadingLogo(false);
     }
   };
 
@@ -135,6 +142,7 @@ const AdminMovies = () => {
     setBanner('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600');
     setVideoUrl('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
     setTrailerUrl('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4');
+    setVideoLogo('/logo.png');
     setPrice('9.99');
     setRentalPrice('3.99');
     setIsPremium(true);
@@ -155,6 +163,7 @@ const AdminMovies = () => {
     setBanner(m.banner || '');
     setVideoUrl(m.videoUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
     setTrailerUrl(m.trailerUrl || '');
+    setVideoLogo(m.videoLogo || '/logo.png');
     setPrice(String(m.price || '9.99'));
     setRentalPrice(String(m.rentalPrice || '3.99'));
     setIsPremium(Boolean(m.isPremium));
@@ -177,6 +186,7 @@ const AdminMovies = () => {
         banner,
         videoUrl,
         trailerUrl,
+        videoLogo,
         price: parseFloat(price),
         rentalPrice: parseFloat(rentalPrice),
         isPremium,
@@ -254,8 +264,14 @@ const AdminMovies = () => {
 
   const getGoogleDriveEmbedUrl = (url) => {
     if (!url) return null;
-    const match = url.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/(?:file\/d\/|open\?id=))([a-zA-Z0-9_-]+)/i);
-    return match ? `https://drive.google.com/file/d/${match[1]}/preview` : null;
+    // 1. Google Drive Folder Embed
+    const folderMatch = url.match(/drive\.google\.com\/(?:drive\/(?:u\/\d+\/)?folders\/)([a-zA-Z0-9_-]+)/i);
+    if (folderMatch) {
+      return `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#grid`;
+    }
+    // 2. Google Drive File Preview Embed
+    const fileMatch = url.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)|docs\.google\.com\/(?:file\/d\/|open\?id=))([a-zA-Z0-9_-]+)/i);
+    return fileMatch ? `https://drive.google.com/file/d/${fileMatch[1]}/preview` : null;
   };
 
   const getYouTubeEmbedUrl = (url) => {
@@ -266,7 +282,21 @@ const AdminMovies = () => {
 
   // 1-Click Video CDN, Google Drive & YouTube Preset Fillers
   const applyPreset = (preset) => {
-    if (preset === 'gdrive_sneh') {
+    if (preset === 'gdrive_vault') {
+      setTitle('Kravan Cinema 4K Master Drive Vault');
+      setDescription('Official 4K master movies, trailers, and film reels directly streamed from Google Drive Cloud Storage.');
+      setVideoUrl('https://drive.google.com/drive/folders/1x6GtjUm9tje9vfb9aSADYLKRuRTEMMvc?usp=drive_link');
+      setTrailerUrl('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4');
+      setPoster('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800');
+      setBanner('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600');
+      setDirector('Kravan DC Studios');
+      setCast('Hollywood & Khmer Cinema Legends');
+      setRating('9.9');
+      setIsTrending(true);
+      setIsFeatured(true);
+      setIsPremium(false);
+      setPrice('0.00');
+    } else if (preset === 'gdrive_sneh') {
       setTitle('ស្នេហ៍ឆ្លងវេហា - សុីន សុីសាមុត & ឌី សាវ៉េត | Video MV [cover]');
       setDescription('បទចម្រៀងមរតកដើម "ស្នេហ៍ឆ្លងវេហា" ច្រៀងឡើងវិញយ៉ាងពិរោះរណ្តំដោយតារាចម្រៀងល្បីៗ រួមជាមួយការសម្តែងគុណភាពខ្ពស់ 4K Ultra HD');
       setVideoUrl('https://drive.google.com/file/d/1zPPSVHgufEB-zpFDosNTocxo9_z7H6yX/view?usp=sharing');
@@ -274,7 +304,7 @@ const AdminMovies = () => {
       setPoster('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800');
       setBanner('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600');
       setDirector('Sinn Sisamouth Classic Cover');
-      setCast('Sinn Sisamouth, Dy Saveth, KV Cinema');
+      setCast('Sinn Sisamouth, Dy Saveth, Kravan DC');
       setRating('9.9');
       setIsTrending(true);
       setIsFeatured(true);
@@ -551,6 +581,13 @@ const AdminMovies = () => {
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
+                  onClick={() => applyPreset('gdrive_vault')}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-bold border border-emerald-500/30 flex items-center gap-1 shadow-sm"
+                >
+                  ☁️ Google Drive Vault (4K Collection)
+                </button>
+                <button
+                  type="button"
                   onClick={() => applyPreset('gdrive_sneh')}
                   className="px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-[11px] font-bold border border-blue-500/30 flex items-center gap-1"
                 >
@@ -595,22 +632,56 @@ const AdminMovies = () => {
               </div>
 
               {/* Streaming Video URL & Direct Video File Upload */}
-              <div className="p-3.5 bg-slate-900/90 rounded-2xl border border-emerald-500/30 space-y-2">
-                <div className="flex items-center justify-between">
+              <div className="p-3.5 bg-slate-900/90 rounded-2xl border border-emerald-500/30 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <label className="block text-[11px] font-bold text-emerald-400 uppercase flex items-center gap-1.5">
-                    <Video className="w-3.5 h-3.5" /> Full Movie Video (Direct MP4 / Stream URL / Local File)
+                    <Video className="w-3.5 h-3.5" /> Full Movie Video (Upload / Google Drive / YouTube / CDN)
                   </label>
-                  <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1 transition-colors">
-                    {uploadingVideo ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
-                    <span>{uploadingVideo ? `Uploading ${videoProgress}%` : '📁 Upload Video File (MP4/MKV)'}</span>
-                    <input
-                      type="file"
-                      accept="video/*,.mp4,.webm,.mkv,.mov,.m4v,.avi"
-                      disabled={uploadingVideo}
-                      onChange={(e) => handleVideoUpload(e.target.files[0], 'video')}
-                      className="hidden"
-                    />
-                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1 transition-colors">
+                      {uploadingVideo ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+                      <span>{uploadingVideo ? `Uploading ${videoProgress}%` : '📁 Upload Local Video'}</span>
+                      <input
+                        type="file"
+                        accept="video/*,.mp4,.webm,.mkv,.mov,.m4v,.avi"
+                        disabled={uploadingVideo}
+                        onChange={(e) => handleVideoUpload(e.target.files[0], 'video')}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Quick Source Presets */}
+                <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
+                  <span className="text-gray-400 font-bold">Formats supported:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const link = prompt('Paste Google Drive share link (e.g. https://drive.google.com/file/d/.../view):');
+                      if (link) setVideoUrl(link.trim());
+                    }}
+                    className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30 font-bold"
+                  >
+                    💾 Google Drive Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const link = prompt('Paste YouTube link (e.g. https://www.youtube.com/watch?v=...):');
+                      if (link) setVideoUrl(link.trim());
+                    }}
+                    className="px-2 py-0.5 rounded bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 font-bold"
+                  >
+                    ▶️ YouTube Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setVideoUrl('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')}
+                    className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 font-bold"
+                  >
+                    ⚡ CDN Direct MP4
+                  </button>
                 </div>
 
                 {uploadingVideo && (
@@ -625,7 +696,7 @@ const AdminMovies = () => {
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    placeholder="https://.../video.mp4 or /uploads/video-....mp4"
+                    placeholder="Paste Google Drive, YouTube, or direct MP4 URL..."
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
                     required
@@ -788,6 +859,43 @@ const AdminMovies = () => {
                       value={banner}
                       onChange={(e) => setBanner(e.target.value)}
                       className="w-full bg-slate-950 border border-gray-700 rounded-xl p-2.5 text-xs text-white focus:border-theme-gold focus:outline-none font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* 🌟 Video Watermark / Channel Logo Overlay Upload */}
+                <div className="space-y-2 p-3.5 bg-slate-900/90 rounded-2xl border border-amber-500/30 sm:col-span-2 shadow-gold-sm">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-[11px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-theme-gold animate-pulse" /> Video Watermark / Logo Overlay (Live Animated on Video Player)
+                    </label>
+                    <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-theme-gold text-[10px] font-bold border border-amber-500/40 flex items-center gap-1 transition-colors">
+                      {uploadingLogo ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+                      <span>{uploadingLogo ? 'Uploading Logo...' : '📁 Upload Logo on Video (PNG/SVG)'}</span>
+                      <input
+                        type="file"
+                        accept="image/png,image/svg+xml,image/webp,image/jpeg"
+                        disabled={uploadingLogo}
+                        onChange={(e) => handleFileUpload(e.target.files[0], 'videoLogo')}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-black/70 border border-amber-500/40 shrink-0 flex items-center justify-center min-w-[50px] min-h-[40px]">
+                      <img
+                        src={videoLogo || '/logo.png'}
+                        alt="Video Watermark Preview"
+                        className="h-8 w-auto object-contain animate-gold-logo drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Paste Custom Video Logo URL or Upload (default: /logo.png)"
+                      value={videoLogo}
+                      onChange={(e) => setVideoLogo(e.target.value)}
+                      className="w-full bg-slate-950 border border-gray-700 rounded-xl p-2.5 text-xs text-amber-300 focus:border-theme-gold focus:outline-none font-mono"
                     />
                   </div>
                 </div>

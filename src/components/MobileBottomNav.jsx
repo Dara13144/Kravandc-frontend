@@ -24,28 +24,27 @@ const MobileBottomNav = () => {
   const navItems = [
     {
       id: 'home',
-      label: t('navHome') || 'Home',
+      label: 'Home',
       icon: Home,
       path: '/'
     },
     {
       id: 'movies',
-      label: t('navMovies') || 'Movies',
+      label: 'Movies',
       icon: Film,
       path: '/movies'
     },
     {
       id: 'podcasts',
-      label: t('navPodcasts') || 'Podcasts',
+      label: 'Podcasts',
       icon: Radio,
       path: '/podcasts'
     },
     {
-      id: 'store',
-      label: 'Store',
-      icon: ShoppingBag,
-      path: '/products',
-      badge: itemCount > 0 ? itemCount : null
+      id: 'topup',
+      label: 'Top Up',
+      icon: Wallet,
+      path: '/topup'
     },
     {
       id: 'profile',

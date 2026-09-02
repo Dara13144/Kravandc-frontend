@@ -1,16 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { movieAPI } from '../api/endpoints';
 import { useAuth } from '../contexts/AuthContext';
 import { useWallet } from '../contexts/WalletContext';
 import MovieCard from '../components/MovieCard';
-import { Filter, Search, SortAsc, Film, Loader2, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Film, Loader2, Sparkles, Filter } from 'lucide-react';
+
+const categoriesList = [
+  { id: '', label: 'All' },
+  { id: 'Asian', label: 'Asian Movies' },
+  { id: 'Comedy Romance', label: 'Comedy Romance' },
+  { id: 'Drama', label: 'Drama' },
+  { id: 'Horror-Comedy', label: 'Horror-Comedy' },
+  { id: 'Thriller-Horror', label: 'Thriller-Horror' },
+  { id: 'Action', label: 'Action & Adventure' },
+  { id: 'Classics', label: 'Khmer Classics' }
+];
 
 const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { user, openAuthModal } = useAuth();
-  const { balance } = useWallet();
+  const { user } = useAuth();
+  const scrollRef = useRef(null);
 
   const [movies, setMovies] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
@@ -18,25 +29,27 @@ const Movies = () => {
 
   // Filters State
   const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [genre, setGenre] = useState(searchParams.get('genre') || '');
-  const [category, setCategory] = useState(searchParams.get('category') || '');
-  const [priceType, setPriceType] = useState(searchParams.get('priceType') || '');
+  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || '');
   const [sort, setSort] = useState(searchParams.get('sort') || 'newest');
   const [page, setPage] = useState(1);
 
-  const genresList = ['Action', 'Sci-Fi', 'Drama', 'Comedy', 'Horror', 'Romance', 'Anime', 'Marvel', 'DC'];
+  const scrollTabs = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const fetchMovies = async () => {
     setLoading(true);
     try {
       const res = await movieAPI.getMovies({
         search,
-        genre,
-        category,
-        priceType,
+        genre: activeCategory,
+        category: activeCategory,
         sort,
         page,
-        limit: 18
+        limit: 25
       });
       setMovies(res.data.data.movies || []);
       setPagination(res.data.data.pagination || { page: 1, totalPages: 1 });
@@ -49,131 +62,73 @@ const Movies = () => {
 
   useEffect(() => {
     fetchMovies();
-  }, [search, genre, category, priceType, sort, page]);
+  }, [search, activeCategory, sort, page]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 min-h-screen">
       
-      {/* Header Title */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
-        <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <Film className="w-8 h-8 text-theme-gold animate-pulse-glow" /> Movies & Series Catalog
-          </h1>
-          <p className="text-xs text-gray-400 mt-1">Browse, unlock, and stream our full 4K library on any device.</p>
-        </div>
-
-        {/* Live Search */}
-        <div className="relative w-full md:w-72">
-          <input
-            type="text"
-            placeholder="Search catalog..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="w-full bg-theme-card border border-gray-700/80 rounded-full py-2.5 pl-10 pr-4 text-xs text-white placeholder-gray-400 focus:border-theme-gold focus:outline-none"
-          />
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-        </div>
-      </div>
-
-      {/* Filter Chips & Controls */}
-      <div className="space-y-4 bg-theme-card/60 p-5 rounded-3xl border border-gray-800/80 shadow-lg">
+      {/* Top Category Slider Bar (Angkor DC Style) */}
+      <div className="relative border-b border-gray-800/80 pb-3 flex items-center">
         
-        {/* Genre Chips */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-gray-400 mr-2 flex items-center gap-1">
-            <Filter className="w-3.5 h-3.5 text-theme-gold" /> Genre:
-          </span>
-          <button
-            onClick={() => { setGenre(''); setPage(1); }}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              genre === '' ? 'bg-amber-500 text-black font-bold shadow-md' : 'bg-gray-800/80 text-gray-300 hover:text-white'
-            }`}
-          >
-            All Genres
-          </button>
-          {genresList.map((g) => (
-            <button
-              key={g}
-              onClick={() => { setGenre(g); setPage(1); }}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                genre.toLowerCase() === g.toLowerCase()
-                  ? 'bg-amber-500 text-black font-bold shadow-md'
-                  : 'bg-gray-800/80 text-gray-300 hover:text-white'
-              }`}
-            >
-              {g}
-            </button>
-          ))}
+        {/* Left Scroll Button */}
+        <button
+          onClick={() => scrollTabs('left')}
+          className="p-1.5 text-gray-400 hover:text-white shrink-0 hover:bg-gray-800/50 rounded-full transition-colors mr-2"
+          aria-label="Scroll left"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        {/* Categories Tab List */}
+        <div
+          ref={scrollRef}
+          className="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 flex-grow"
+        >
+          {categoriesList.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.label}
+                onClick={() => {
+                  setActiveCategory(cat.id);
+                  setPage(1);
+                }}
+                className={`whitespace-nowrap text-xs sm:text-sm uppercase tracking-wider font-bold transition-all shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'text-amber-400 font-extrabold border-b-2 border-amber-400 pb-1.5 shadow-gold-sm'
+                    : 'text-gray-300 hover:text-white pb-1.5'
+                }`}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Price Type & Sorting */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-gray-800/60">
-          
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => { setPriceType(''); setPage(1); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                priceType === '' ? 'bg-slate-800 text-theme-gold border border-amber-500/40' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              All Content
-            </button>
-            <button
-              onClick={() => { setPriceType('free'); setPage(1); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                priceType === 'free' ? 'bg-slate-800 text-theme-gold border border-amber-500/40' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Free Access
-            </button>
-            <button
-              onClick={() => { setPriceType('premium'); setPage(1); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                priceType === 'premium' ? 'bg-slate-800 text-theme-gold border border-amber-500/40' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Premium 4K
-            </button>
-          </div>
-
-          {/* Sort Selector */}
-          <div className="flex items-center gap-2">
-            <SortAsc className="w-4 h-4 text-theme-gold" />
-            <select
-              value={sort}
-              onChange={(e) => { setSort(e.target.value); setPage(1); }}
-              className="bg-slate-900 border border-gray-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-theme-gold"
-            >
-              <option value="newest">Newest Releases</option>
-              <option value="popular">Most Popular</option>
-              <option value="rating">Top Rated (★)</option>
-              <option value="price_low">Price: Low to High</option>
-              <option value="price_high">Price: High to Low</option>
-            </select>
-          </div>
-
-        </div>
-
+        {/* Right Scroll Button */}
+        <button
+          onClick={() => scrollTabs('right')}
+          className="p-1.5 text-gray-400 hover:text-white shrink-0 hover:bg-gray-800/50 rounded-full transition-colors ml-2"
+          aria-label="Scroll right"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </div>
 
-      {/* Movies Grid */}
+      {/* Movies Grid (Angkor DC Style 5 columns) */}
       {loading ? (
         <div className="py-32 text-center space-y-3">
           <Loader2 className="w-10 h-10 text-theme-gold animate-spin mx-auto" />
-          <p className="text-xs text-gray-400">Loading movies catalog...</p>
+          <p className="text-xs text-gray-400">Loading Angkor DC cinema catalog...</p>
         </div>
       ) : movies.length === 0 ? (
         <div className="py-24 text-center space-y-3">
           <Film className="w-12 h-12 text-gray-600 mx-auto" />
           <h3 className="text-lg font-bold text-white">No Movies Found</h3>
-          <p className="text-xs text-gray-400">Try adjusting your filters or search terms.</p>
+          <p className="text-xs text-gray-400">Try adjusting your selected category.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6">
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}

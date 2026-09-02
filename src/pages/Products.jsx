@@ -41,7 +41,7 @@ const Products = () => {
       {/* Header */}
       <div className="text-center space-y-3">
         <span className="inline-block px-4 py-1 rounded-full text-xs font-black uppercase bg-amber-500/20 text-theme-gold border border-amber-500/30">
-          KV CINEMA E-STORE
+          KRAVAN DC E-STORE
         </span>
         <h1 className="text-4xl font-black text-white">Cinema Merchandise & VIP Passes</h1>
         <p className="text-sm text-gray-400 max-w-2xl mx-auto">
