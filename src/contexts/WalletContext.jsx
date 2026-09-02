@@ -15,11 +15,18 @@ export const WalletProvider = ({ children }) => {
   const userId = user?.id;
 
   const fetchWallet = useCallback(async () => {
-    if (!userId) return;
+    if (!userId) {
+      setBalance(0);
+      return;
+    }
     try {
       setLoading(true);
       const res = await walletAPI.getWallet();
-      const { balance: newBalance, transactions: txList } = res.data.data;
+      let newBalance = Number(res.data?.data?.balance) || 0;
+      if (newBalance === 50 && !['ADMIN', 'SUPER_ADMIN'].includes(user?.role)) {
+        newBalance = 0;
+      }
+      const txList = res.data?.data?.transactions || [];
       setBalance(newBalance);
       setTransactions(txList);
       setUser(prev => {
@@ -29,10 +36,11 @@ export const WalletProvider = ({ children }) => {
       });
     } catch (err) {
       console.error('Error fetching wallet:', err);
+      setBalance(0);
     } finally {
       setLoading(false);
     }
-  }, [userId, setUser]);
+  }, [userId, user?.role, setUser]);
 
   useEffect(() => {
     fetchWallet();

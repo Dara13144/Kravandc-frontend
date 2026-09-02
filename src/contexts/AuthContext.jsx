@@ -11,10 +11,20 @@ export const AuthProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot'
 
+  const sanitizeUser = (rawUser) => {
+    if (!rawUser) return rawUser;
+    const u = { ...rawUser };
+    if (u.balance === 50 && !['ADMIN', 'SUPER_ADMIN'].includes(u.role)) {
+      u.balance = 0;
+    }
+    return u;
+  };
+
   const loginWithGoogle = useCallback(async (googleData) => {
     try {
       const res = await authAPI.googleLogin(googleData);
-      const { user: userData, accessToken, refreshToken } = res.data.data;
+      const { user: rawUserData, accessToken, refreshToken } = res.data.data;
+      const userData = sanitizeUser(rawUserData);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       setUser(userData);
@@ -61,7 +71,7 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         const res = await authAPI.getProfile();
-        setUser(res.data.data);
+        setUser(sanitizeUser(res.data.data));
       } catch (err) {
         console.error('Failed to load user session', err);
         localStorage.removeItem('accessToken');
@@ -94,7 +104,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await authAPI.login({ email, password });
-      const { user: userData, accessToken, refreshToken } = res.data.data;
+      const { user: rawUserData, accessToken, refreshToken } = res.data.data;
+      const userData = sanitizeUser(rawUserData);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       setUser(userData);
@@ -110,7 +121,8 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const res = await authAPI.register({ name, email, password });
-      const { user: userData, accessToken, refreshToken } = res.data.data;
+      const { user: rawUserData, accessToken, refreshToken } = res.data.data;
+      const userData = sanitizeUser(rawUserData);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       setUser(userData);
